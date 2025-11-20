@@ -5,6 +5,16 @@ import { AlchemyAccountProvider } from "@account-kit/react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { PropsWithChildren } from "react";
 
+// ============================================================================
+// PROVIDERS - ALCHEMY ACCOUNT KIT SETUP
+// ============================================================================
+// This component wraps the entire app with necessary providers:
+// 1. QueryClientProvider - for React Query (async state management)
+// 2. AlchemyAccountProvider - makes Alchemy Account Kit hooks available
+//
+// The initialState prop enables SSR by persisting auth state in cookies.
+// ============================================================================
+
 export const Providers = (
   props: PropsWithChildren<{ initialState?: AlchemyClientState }>
 ) => {

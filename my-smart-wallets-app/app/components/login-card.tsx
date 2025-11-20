@@ -12,7 +12,20 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useAuthModal } from "@account-kit/react";
+
+// ============================================================================
+// LOGIN CARD - ALCHEMY ACCOUNT KIT AUTHENTICATION
+// ============================================================================
+// This component handles user authentication using Alchemy's Account Kit.
+// When users log in, Account Kit creates:
+// 1. An EOA (Externally Owned Account) - the actual wallet with private key
+// 2. A Smart Contract Account (SCA) - for gasless transactions
+//
+// The EOA is what we'll use with Universal Accounts!
+// ============================================================================
+
 export default function LoginPage() {
+  // useAuthModal provides the authentication modal from Account Kit
   const { openAuthModal } = useAuthModal();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 

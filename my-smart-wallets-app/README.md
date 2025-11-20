@@ -1,100 +1,122 @@
-# Smart Wallets Quickstart (Next.js)
+# Universal Accounts with Alchemy
 
-Use this template to get started with **embedded smart wallets** using [Alchemy Account Kit](https://www.alchemy.com/docs/wallets).
+This is a sample Next.js application demonstrating how to integrate and use Particle Network's Universal Accounts with Alchemy's Account Kit.
 
-## ✨ Features
+The Universal Accounts SDK allows you to integrate Universal Accounts into your dApp. This enables you to onboard users from any ecosystem without requiring them to bridge, regardless of where your dApp is deployed.
 
-- Email, passkey & social login using pre‑built UI components
-- Flexible, secure, and cheap smart accounts
-- Gasless transactions powered by ERC-4337 Account Abstraction
-- One‑click NFT mint on Arbitrum Sepolia (no ETH required)
-- Server‑side rendering ready – session persisted with cookies
-- TailwindCSS + shadcn/ui components, React Query, TypeScript
+## What This App Does
 
-![Smart Wallet Quickstart](https://github.com/user-attachments/assets/2903fb78-e632-4aaa-befd-5775c60e1ca2)
+This demo combines two powerful technologies to create a better Web3 user experience:
 
-## 📍 Network & Demo Contract
+- **Alchemy Account Kit** - Provides user authentication (social login, email, passkeys) and creates an EOA (Externally Owned Account)
+- **Particle Network's Universal Accounts** - Enables cross-chain transactions and unified balance tracking across multiple blockchains
 
-This quickstart is configured to run on **Arbitrum Sepolia** testnet. A free demo NFT contract has been deployed specifically for this quickstart, allowing you to mint NFTs without any setup or deployment steps. The contract is pre-configured and ready to use out of the box.
+### Key Features
 
-## 🚀 Quick start
+ - **Social Authentication** - Users log in with email, Google, Facebook, or passkeys (no private key management)  
+ - **Unified Balance** - View aggregated balance across all chains in a single USD value  
+ - **Cross-Chain Execution** - Execute transactions on any supported chain (e.g., mint NFT on Polygon)  
+ - **Multi-Chain Accounts** - Automatically creates smart accounts on EVM chains and Solana
 
-### Scaffold a new app
+### The Architecture
 
-```bash
-npm create next-app smart-wallets-quickstart -- --example https://github.com/alchemyplatform/smart-wallets-quickstart
-cd smart-wallets-quickstart
-```
+The app uses a clever pattern:
+1. **Alchemy** handles authentication and provides the EOA signer
+2. **Universal Accounts** uses that EOA to create multi-chain smart accounts
+3. Transactions are signed with the Alchemy EOA and executed via Universal Accounts infrastructure
 
-### 🔧 Configure
+This creates two types of accounts:
+- **EOA** - The underlying wallet (from Alchemy)
+- **Universal Smart Accounts** - For cross-chain operations (EVM + Solana)
 
-Get your pre-configured API key and policy ID from the [Smart Wallets dashboard](https://dashboard.alchemy.com/services/smart-wallets/configuration) by viewing one of your configurations. You will get a default app, configuration, and sponsorship policy created for you to quickly start testing.
+> Note that the user does not need to interact with the EOA at all.
 
-Once you have your keys, add them to your `.env.local ` file.
+## Getting Started
 
-```bash
-cp .env.example .env.local      # create if missing
-# add NEXT_PUBLIC_ALCHEMY_API_KEY=...
-# add NEXT_PUBLIC_ALCHEMY_POLICY_ID=...
-```
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-| Variable                        | Purpose                                                                                                     |
-| ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_ALCHEMY_API_KEY`   | API key for your Alchemy [app](https://dashboard.alchemy.com/services/smart-wallets/configuration)          |
-| `NEXT_PUBLIC_ALCHEMY_POLICY_ID` | Gas Manager policy ID for [sponsorship](https://dashboard.alchemy.com/services/smart-wallets/configuration) |
+### Prerequisites
 
-If instead you want to set up your own configurations from scratch you should:
+- Node.js (v18 or later)
+- yarn or npm
 
-1. Create a new Alchemy [app](https://dashboard.alchemy.com/apps)
-2. Set up a new Smart Wallet [configruation](https://dashboard.alchemy.com/services/smart-wallets/configuration) for your app to specify login methods
-3. Create a gas sponsorship [policy](https://dashboard.alchemy.com/services/gas-manager/configuration) for your app
+### Installation
 
-Note: for production, you should [protect](https://www.alchemy.com/docs/wallets/resources/faqs#how-should-i-protect-my-api-key-and-policy-id-in-the-frontend) your API key and policy ID behind a server rather than exposing client side.
+1. Navigate to the application directory:
+   ```sh
+   cd my-smart-wallets-app
+   ```
 
-### Run your app!
+2. Install the dependencies:
+   ```sh
+   npm install
+   ```
+   or
+   ```sh
+   yarn install
+   ```
 
-```bash
+### Running the Application
+
+To run the application in development mode, execute the following command:
+
+```sh
 npm run dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000), first **Login**, then try minting a new NFT.
-
-Congrats! You've created a new smart wallet and sent your first sponsored transaction!
-
-See what else you can do with [smart wallets](https://www.alchemy.com/docs/wallets/react/overview).
-
-## 🗂 Project layout
-
-```
-app/           # Next.js pages & components
-components/ui/ # shadcn/ui primitives
-lib/           # constants & helpers
-config.ts      # Account Kit + Gas Sponsorship setup
-tailwind.config.ts
+or
+```sh
+yarn dev
 ```
 
-## 🏗️ How it works
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-1. `config.ts` initializes Account Kit with your API key, Arbitrum Sepolia chain, and Gas Sponsorship policy.
-2. `Providers` wraps the app with `AlchemyAccountProvider` & React Query.
-3. `LoginCard` opens the authentication modal (`useAuthModal`).
-4. After login, `useSmartAccountClient` exposes the smart wallet.
-5. `NftMintCard` uses `useSendUserOperation` to call `mintTo()` on the demo ERC‑721, with gas paid by the Paymaster.
+## How It Works: Combining Account Kit and Universal Accounts
 
-## 📚 Docs & resources
+This demo showcases a powerful pattern: using **Alchemy's Account Kit** for user authentication and EOA management, while leveraging **Particle Network's Universal Accounts** for chain abstraction and cross-chain transactions.
 
-- React Quickstart → [https://www.alchemy.com/docs/wallets/react/quickstart](https://www.alchemy.com/docs/wallets/react/quickstart)
-- Gas Manager quickstart → [https://www.alchemy.com/docs/wallets/infra/quickstart](https://www.alchemy.com/docs/wallets/infra/quickstart)
+The core architectural flow is as follows:
 
-## 🖥 Scripts
+1.  **Authentication with Alchemy Account Kit**: The user logs in via the UI provided by Account Kit (e.g., social login, email, passkey).
 
-```bash
-npm run dev     # start development server
-npm run build   # production build
-npm run start   # run production build
-npm run lint    # lint code
-```
+2.  **Accessing the EOA Signer**: Although Account Kit creates a smart account for the user, it also provides access to the underlying EOA (Externally Owned Account) that acts as the signer. We need to use the EOA directly to control the Universal Account, so we use the `useUser` hook to get the EOA's address.
 
-## 🛂 License
+    ```typescript
+    import { useUser } from "@account-kit/react";
 
-MIT
+    const user = useUser();
+    const eoaAddress = user?.address; // This is the EOA signer address
+    ```
+
+3.  **Initializing the Universal Account**: Particle Network's `UniversalAccount` is then initialized using the EOA address from Account Kit as its `ownerAddress`. This correctly establishes the ownership and signing relationship.
+
+    ```typescript
+    import { UniversalAccount } from "@particle-network/universal-account-sdk";
+
+    const universalAccount = new UniversalAccount({
+      // ...project config
+      ownerAddress: eoaAddress,
+    });
+    ```
+
+4.  **Creating and Signing a Transaction**:
+    *   The demo transaction is built using `universalAccount.createUniversalTransaction()`. This returns a transaction object containing a `rootHash`.
+    *   This `rootHash` must be signed by the EOA that owns the Universal Account. We get this signer from Account Kit's `useSigner` hook.
+    *   **Crucially**, when signing the hash, it must be passed as raw bytes to the `signer.signMessage` method.
+
+    ```typescript
+    import { useSigner } from "@account-kit/react";
+    import { getBytes } from "ethers";
+
+    const { signer } = useSigner();
+
+    // ... create `transaction` with universalAccount
+
+    const signature = await signer.signMessage({
+      raw: getBytes(transaction.rootHash),
+    });
+    ```
+
+5.  **Sending the Transaction**: Finally, the original transaction object and the signature from the EOA are sent using `universalAccount.sendTransaction()`.
+
+This flow successfully combines the authentication of Alchemy's Account Kit with the powerful chain abstraction capabilities of Particle Network's Universal Accounts.
+
