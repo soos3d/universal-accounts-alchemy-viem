@@ -293,7 +293,7 @@ export default function UserInfo() {
             You logged in with <strong>Alchemy Account Kit</strong>, which created a secure wallet for you.
           </p>
           <p>
-            <strong>Particle's Universal Accounts</strong> now gives you access to multiple blockchains 
+            <strong>Particle&apos;s Universal Accounts</strong> now gives you access to multiple blockchains 
             with a single account - no bridging needed!
           </p>
           <p className="text-sm pt-2 border-t">
