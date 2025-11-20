@@ -15,12 +15,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { formatAddress } from "@/lib/utils";
 import {
   useUser,
@@ -114,18 +108,10 @@ export default function UserInfo() {
   // UI STATE
   // ============================================================================
 
-  const [isCopied, setIsCopied] = useState(false);
   const [isTransacting, setIsTransacting] = useState(false);
   const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [transactionId, setTransactionId] = useState<string | null>(null);
   const [transactionError, setTransactionError] = useState<string | null>(null);
-  const [eoaSignature, setEoaSignature] = useState<string | null>(null);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(address ?? "");
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000);
-  };
 
   // ============================================================================
   // STEP 3: CREATE UNIVERSAL ACCOUNT INSTANCE
@@ -296,29 +282,23 @@ export default function UserInfo() {
     }
   };
 
-  const handleSignMessageWithEOA = async () => {
-    if (!signer) {
-      console.error("EOA signer not available");
-      return;
-    }
 
-    try {
-      const message = "Hello from my EOA!";
-      const signature = await signer.signMessage(message);
-      setEoaSignature(signature);
-      console.log("EOA Signature:", signature);
-    } catch (error) {
-      console.error("Error signing with EOA:", error);
-    }
-  };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Alchemy + Universal Accounts Demo</CardTitle>
-        <CardDescription>
-          This demo shows how Alchemy Account Kit and Universal Accounts work
-          together
+        <CardTitle>Your Universal Account</CardTitle>
+        <CardDescription className="space-y-2">
+          <p>
+            You logged in with <strong>Alchemy Account Kit</strong>, which created a secure wallet for you.
+          </p>
+          <p>
+            <strong>Particle's Universal Accounts</strong> now gives you access to multiple blockchains 
+            with a single account - no bridging needed!
+          </p>
+          <p className="text-sm pt-2 border-t">
+            👇 Try minting an NFT on Polygon below to see cross-chain transactions in action.
+          </p>
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -332,75 +312,41 @@ export default function UserInfo() {
           <p className="font-medium">{userEmail}</p>
         </div>
 
-        {/* ============================================================
-            SECTION 2: ALCHEMY SMART ACCOUNT ADDRESS
-            ============================================================
-            This is Alchemy's Smart Contract Account on Base chain.
-            Used for gasless transactions on Base.
-            ============================================================ */}
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <p className="text-sm font-medium text-muted-foreground">
-              Alchemy Smart Account (Base)
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="font-mono text-xs py-1 px-2">
-              {formatAddress(address ?? "")}
-            </Badge>
-            <TooltipProvider>
-              <Tooltip open={isCopied}>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6"
-                    onClick={handleCopy}
-                  >
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Copied!</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6"
-              onClick={() => {
-                if (address && client?.chain?.blockExplorers?.default?.url) {
-                  window.open(
-                    `${client.chain.blockExplorers.default.url}/address/${address}`,
-                    "_blank"
-                  );
-                }
-              }}
-            >
-              <ExternalLink className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-        </div>
+
 
         {/* ============================================================
-            SECTION 3: UNIVERSAL ACCOUNT ADDRESSES
+            SECTION 2: UNIVERSAL ACCOUNT ADDRESSES
             ============================================================
             These are the smart accounts created by Universal Accounts.
-            They are DIFFERENT from Alchemy's smart account above.
-            All controlled by the same EOA from Alchemy.
+            All controlled by the EOA from Alchemy.
             ============================================================ */}
         {accountInfo && (
-          <div className="border-t pt-4">
-            <h3 className="text-sm font-medium mb-3">
+          <div>
+            <h3 className="text-sm font-medium mb-2">
               Universal Account Addresses (Multi-Chain)
             </h3>
+            <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+              You can deposit assets from any supported chain directly to these addresses. 
+              All deposits will automatically appear in your unified balance below - no bridging required!
+            </p>
 
             <div className="space-y-3">
               {/* EVM Smart Account */}
               <div>
                 <p className="text-xs font-medium text-muted-foreground mb-1">
                   Universal Account - EVM
+                </p>
+                <p className="text-xs text-muted-foreground mb-2 leading-relaxed">
+                  Supports 15+ EVM chains including Ethereum, Base, Polygon, and more.{" "}
+                  <a 
+                    href="https://developers.particle.network/universal-accounts/cha/chains" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline inline-flex items-center gap-0.5"
+                  >
+                    View all chains
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
                 </p>
                 <div className="flex items-center gap-2">
                   <Badge
@@ -428,6 +374,9 @@ export default function UserInfo() {
               <div>
                 <p className="text-xs font-medium text-muted-foreground mb-1">
                   Universal Account - Solana
+                </p>
+                <p className="text-xs text-muted-foreground mb-2 leading-relaxed">
+                  Supports Solana and all SPL tokens.
                 </p>
                 <div className="flex items-center gap-2">
                   <Badge
@@ -459,7 +408,7 @@ export default function UserInfo() {
         )}
 
         {/* ============================================================
-            SECTION 4: UNIFIED BALANCE
+            SECTION 3: UNIFIED BALANCE
             ============================================================
             Universal Accounts aggregates balances across all chains.
             This shows the total value in USD.
@@ -485,40 +434,10 @@ export default function UserInfo() {
           </div>
         )}
 
-        {/* ============================================================
-            SECTION 5: SIGN WITH EOA
-            ============================================================
-            Demonstrates accessing the EOA signer from Alchemy.
-            This is the same signer used by Universal Accounts.
-            ============================================================ */}
-        <div className="border-t pt-4">
-          <h3 className="text-sm font-medium mb-3">
-            Sign with EOA (from Alchemy)
-          </h3>
-          <div className="space-y-4">
-            <div className="flex flex-col">
-              <p className="text-sm text-muted-foreground mb-2">
-                This uses the EOA signer from Alchemy Account Kit - the same one
-                that controls Universal Accounts
-              </p>
-              <Button onClick={handleSignMessageWithEOA} disabled={!signer}>
-                Sign Message with EOA
-              </Button>
 
-              {eoaSignature && (
-                <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                  <p className="text-sm text-blue-700 break-all">
-                    <span className="font-medium">EOA Signature:</span>
-                    <span className="ml-1">{eoaSignature}</span>
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
 
         {/* ============================================================
-            SECTION 6: UNIVERSAL TRANSACTION
+            SECTION 4: UNIVERSAL TRANSACTION
             ============================================================
             Demonstrates the full flow:
             1. Create Universal Transaction
@@ -527,13 +446,13 @@ export default function UserInfo() {
             ============================================================ */}
         <div className="border-t pt-4">
           <h3 className="text-sm font-medium mb-3">
-            Universal Transaction Demo
+            Try a Cross-Chain Transaction
           </h3>
           <div className="space-y-4">
             <div className="flex flex-col">
               <p className="text-sm text-muted-foreground mb-2">
-                Mint an NFT on Polygon using Universal Accounts. The transaction
-                is signed with your EOA from Alchemy.
+                You can mint an NFT on Polygon without holding any POL and without 
+                switching networks or bridging funds. This is the power of Universal Accounts!
               </p>
               <Button
                 onClick={handleMintNft}

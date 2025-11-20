@@ -56,6 +56,24 @@ These instructions will get you a copy of the project up and running on your loc
    yarn install
    ```
 
+3. Set up environment variables:
+   ```sh
+   cp .env.example .env
+   ```
+   and fill in the values for:
+
+  Find the values on Alchemy and Particle Network:
+
+  - https://dashboard.particle.network/
+  - https://dashboard.alchemy.com/
+
+   ```  
+  NEXT_PUBLIC_ALCHEMY_API_KEY=YOUR_ALCHEMY_API_KEY
+  NEXT_PUBLIC_PROJECT_ID=YOUR_PROJECT_ID
+  NEXT_PUBLIC_PROJECT_CLIENT_KEY=YOUR_PROJECT_CLIENT_KEY
+  NEXT_PUBLIC_PROJECT_APP_ID=YOUR_PROJECT_APP_ID
+  ```
+
 ### Running the Application
 
 To run the application in development mode, execute the following command:
